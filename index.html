@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteClaw - 透明可控的 AI Agent 基础框架</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --text: #1a1a2e;
+            --text-muted: #5f6b7a;
+            --border: #e5e8eb;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #059669;
+            --warning: #d97706;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; }
+        .nav-links a { margin-left: 24px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--accent); }
+        .hero { padding: 80px 0 60px; text-align: center; }
+        .badge {
+            display: inline-block; padding: 6px 14px; background: var(--accent-light); color: var(--accent);
+            border-radius: 999px; font-size: 0.85rem; font-weight: 500; margin-bottom: 20px;
+        }
+        h1 { font-size: 2.8rem; margin: 0 0 16px; letter-spacing: -0.02em; }
+        .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 640px; margin: 0 auto 32px; }
+        .cta { display: inline-flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500;
+            font-size: 0.95rem; transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        section { padding: 60px 0; }
+        section.alt { background: var(--surface); }
+        h2 { font-size: 1.8rem; margin: 0 0 24px; }
+        h3 { font-size: 1.2rem; margin: 0 0 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .card {
+            background: white; border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-icon { font-size: 1.5rem; margin-bottom: 12px; }
+        .card p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .tech-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        .tech-table th, .tech-table td {
+            padding: 12px 16px; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.95rem;
+        }
+        .tech-table th { background: var(--surface); font-weight: 600; }
+        .tech-table td:first-child { font-weight: 500; width: 140px; }
+        .code-block {
+            background: #1e1e2e; color: #e4e4e7; padding: 20px; border-radius: 10px;
+            font-family: "SF Mono", Monaco, "Cascadia Code", monospace; font-size: 0.9rem;
+            overflow-x: auto; line-height: 1.6;
+        }
+        .code-block .comment { color: #7f849c; }
+        .code-block .prompt { color: #a6e3a1; }
+        .metric { display: inline-block; margin-right: 32px; margin-bottom: 12px; }
+        .metric strong { display: block; font-size: 1.8rem; color: var(--accent); }
+        .metric span { color: var(--text-muted); font-size: 0.9rem; }
+        footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+        .architecture { text-align: center; margin: 20px 0; }
+        .tag {
+            display: inline-block; padding: 4px 10px; border-radius: 6px; background: var(--surface);
+            border: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); margin: 4px 4px 4px 0;
+        }
+        @media (max-width: 640px) {
+            h1 { font-size: 2rem; }
+            .hero { padding: 48px 0 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="container">
+        <a href="#" class="logo">LiteClaw</a>
+        <div class="nav-links">
+            <a href="#features">特性</a>
+            <a href="#architecture">架构</a>
+            <a href="#quickstart">快速开始</a>
+            <a href="#tech">技术栈</a>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="badge">AI Agent · 透明可控 · 企业级</div>
+        <h1>透明可控的 AI Agent 基础框架</h1>
+        <p class="subtitle">
+            LiteClaw 是一个面向企业场景的 AI Agent 执行框架。它通过 LangGraph 状态机、预检式工具调用、分层记忆与纵深防御沙盒，让 AI 的每一次操作都可观测、可审计、可回滚。
+        </p>
+        <div class="cta">
+            <a href="https://github.com/jygbz/LiteClaw" class="btn btn-primary" target="_blank">查看 GitHub</a>
+            <a href="#quickstart" class="btn btn-secondary">快速开始</a>
+        </div>
+    </div>
+</section>
+
+<section class="alt">
+    <div class="container">
+        <h2 style="text-align:center">核心指标</h2>
+        <div style="text-align:center; margin-top: 28px;">
+            <div class="metric"><strong>50% → 10%</strong><span>预检式调用降低 P0 事故率</span></div>
+            <div class="metric"><strong>94%</strong><span>懒加载降低启动 Token 消耗</span></div>
+            <div class="metric"><strong>4</strong><span>层纵深防御沙盒</span></div>
+            <div class="metric"><strong>5</strong><span>类事件全链路审计</span></div>
+        </div>
+    </div>
+</section>
+
+<section id="features">
+    <div class="container">
+        <h2>核心特性</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <h3>预检式工具调用</h3>
+                <p>工具执行前 LLM 先阅读完整说明书进行风险评估，确认安全后再执行。避免名称迷惑、参数误用导致的安全事故。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🧠</div>
+                <h3>分层记忆架构</h3>
+                <p>长期画像（Markdown）与短期摘要（State）分离，40 轮自动触发按回合裁剪，支持跨会话复用与长对话稳定性。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔒</div>
+                <h3>纵深防御沙盒</h3>
+                <p>路径规范化、5 条正则熔断、60 秒超时兜底，三层防御拦截路径穿越、危险命令与长时间挂起。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📋</div>
+                <h3>异步审计日志</h3>
+                <p>单例 + 内存队列 + 守护线程异步写入，5 类事件全记录，对主流程零阻塞，满足企业可观测性要求。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>懒加载技能引擎</h3>
+                <p>启动仅解析前 50 行元数据，首次调用才加载完整内容，LRU 缓存 + mtime 热更新，万级技能也能秒启。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔌</div>
+                <h3>多模型 Provider 工厂</h3>
+                <p>统一封装 OpenAI / Anthropic / 本地模型等接口，通过配置切换，降低多模型接入成本。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="architecture" class="alt">
+    <div class="container">
+        <h2>系统架构</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">
+            LiteClaw 采用四层架构：入口层负责交互，引擎层承载 Agent 核心循环，工具层暴露安全执行环境，运行时层提供持久化、审计与调度。
+        </p>
+        <div class="architecture">
+            <svg width="100%" height="420" viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+                    </marker>
+                </defs>
+                <style>
+                    .box { rx: 8; }
+                    .title { font-size: 13px; font-weight: 600; }
+                    .desc { font-size: 10px; fill: #5f6b7a; }
+                </style>
+                <!-- 入口层 -->
+                <rect x="20" y="20" width="720" height="80" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" class="box"/>
+                <text x="40" y="45" class="title">入口层</text>
+                <rect x="60" y="55" width="140" height="32" fill="#ffffff" stroke="#93c5fd" class="box"/>
+                <text x="70" y="75" class="desc">CLI / Typer</text>
+                <rect x="220" y="55" width="140" height="32" fill="#ffffff" stroke="#93c5fd" class="box"/>
+                <text x="230" y="75" class="desc">Prompt Toolkit</text>
+                <rect x="380" y="55" width="140" height="32" fill="#ffffff" stroke="#93c5fd" class="box"/>
+                <text x="390" y="75" class="desc">Monitor</text>
+                <rect x="540" y="55" width="140" height="32" fill="#ffffff" stroke="#93c5fd" class="box"/>
+                <text x="550" y="75" class="desc">main.py</text>
+
+                <!-- 引擎层 -->
+                <rect x="20" y="120" width="720" height="80" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" class="box"/>
+                <text x="40" y="145" class="title">引擎层</text>
+                <rect x="60" y="155" width="140" height="32" fill="#ffffff" stroke="#86efac" class="box"/>
+                <text x="70" y="175" class="desc">LangGraph 状态机</text>
+                <rect x="220" y="155" width="140" height="32" fill="#ffffff" stroke="#86efac" class="box"/>
+                <text x="230" y="175" class="desc">Agent 决策节点</text>
+                <rect x="380" y="155" width="140" height="32" fill="#ffffff" stroke="#86efac" class="box"/>
+                <text x="390" y="175" class="desc">Context 管理</text>
+                <rect x="540" y="155" width="140" height="32" fill="#ffffff" stroke="#86efac" class="box"/>
+                <text x="550" y="175" class="desc">Skill Loader</text>
+
+                <!-- 工具层 -->
+                <rect x="20" y="220" width="720" height="80" fill="#fefce8" stroke="#fde047" stroke-width="1" class="box"/>
+                <text x="40" y="245" class="title">工具层</text>
+                <rect x="60" y="255" width="140" height="32" fill="#ffffff" stroke="#fcd34d" class="box"/>
+                <text x="70" y="275" class="desc">Base Tool</text>
+                <rect x="220" y="255" width="140" height="32" fill="#ffffff" stroke="#fcd34d" class="box"/>
+                <text x="230" y="275" class="desc">Builtins</text>
+                <rect x="380" y="255" width="140" height="32" fill="#ffffff" stroke="#fcd34d" class="box"/>
+                <text x="390" y="275" class="desc">Sandbox Tools</text>
+                <rect x="540" y="255" width="140" height="32" fill="#ffffff" stroke="#fcd34d" class="box"/>
+                <text x="550" y="275" class="desc">Tool Registry</text>
+
+                <!-- 运行时层 -->
+                <rect x="20" y="320" width="720" height="80" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1" class="box"/>
+                <text x="40" y="345" class="title">运行时层</text>
+                <rect x="60" y="355" width="140" height="32" fill="#ffffff" stroke="#d8b4fe" class="box"/>
+                <text x="70" y="375" class="desc">SQLite 持久化</text>
+                <rect x="220" y="355" width="140" height="32" fill="#ffffff" stroke="#d8b4fe" class="box"/>
+                <text x="230" y="375" class="desc">异步审计日志</text>
+                <rect x="380" y="355" width="140" height="32" fill="#ffffff" stroke="#d8b4fe" class="box"/>
+                <text x="390" y="375" class="desc">Provider 工厂</text>
+                <rect x="540" y="355" width="140" height="32" fill="#ffffff" stroke="#d8b4fe" class="box"/>
+                <text x="550" y="375" class="desc">定时任务调度</text>
+
+                <!-- 箭头 -->
+                <line x1="380" y1="100" x2="380" y2="120" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow)"/>
+                <line x1="380" y1="200" x2="380" y2="220" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow)"/>
+                <line x1="380" y1="300" x2="380" y2="320" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow)"/>
+            </svg>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            <strong>核心执行流程：</strong>用户输入 → 审计记录 → 上下文裁剪与记忆注入 → LLM 决策 → 若需工具则路由到 Tools 节点 → 沙箱执行 → 结果回写 → 循环直到输出最终答案。整个状态由 AsyncSqliteSaver 持久化，支持断点续传。
+        </p>
+    </div>
+</section>
+
+<section id="quickstart">
+    <div class="container">
+        <h2>快速开始</h2>
+        <div class="code-block">
+<span class="comment"># 1. 克隆仓库</span>
+git clone https://github.com/jygbz/LiteClaw.git
+cd LiteClaw
+
+<span class="comment"># 2. 创建虚拟环境并安装依赖</span>
+python -m venv venv
+source venv/bin/activate  <span class="comment"># Windows: venv\Scripts\activate</span>
+pip install -r requirements.txt
+
+<span class="comment"># 3. 配置环境变量</span>
+cp .env.example .env
+<span class="comment"># 编辑 .env，填入 LLM API Key</span>
+
+<span class="comment"># 4. 启动交互式 CLI</span>
+liteclaw
+        </div>
+    </div>
+</section>
+
+<section id="tech" class="alt">
+    <div class="container">
+        <h2>技术栈</h2>
+        <table class="tech-table">
+            <thead>
+                <tr><th>技术</th><th>用途</th><th>选型原因</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Python</td><td>主开发语言</td><td>生态成熟，AI/LLM 库丰富</td></tr>
+                <tr><td>LangGraph</td><td>Agent 状态机</td><td>显式图结构，断点续传，可控循环</td></tr>
+                <tr><td>LangChain</td><td>LLM 调用与工具封装</td><td>多模型 Provider 统一接口</td></tr>
+                <tr><td>SQLite</td><td>状态持久化与审计存储</td><td>零依赖、轻量、便于本地/私有化部署</td></tr>
+                <tr><td>Pydantic</td><td>配置与参数校验</td><td>类型安全、自动校验</td></tr>
+                <tr><td>Prompt Toolkit</td><td>交互式 CLI</td><td>补全、历史记录、友好终端体验</td></tr>
+                <tr><td>Typer</td><td>CLI 命令定义</td><td>基于类型注解，代码简洁</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h2>适用场景</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>企业内部自动化助手</h3>
+                <p>在受控环境中执行脚本、查询数据库、生成报表，所有操作留痕审计。</p>
+            </div>
+            <div class="card">
+                <h3>开发协作 Agent</h3>
+                <p>安全执行代码片段、文件操作、Git 命令，避免误删或越权访问。</p>
+            </div>
+            <div class="card">
+                <h3>业务流程原型</h3>
+                <p>快速验证"AI 员工"概念，把状态机、记忆、权限控制作为可复用基础设施。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>LiteClaw · 透明可控的 AI Agent 基础框架</p>
+        <p style="margin-top: 8px;">
+            <a href="https://github.com/jygbz/LiteClaw" target="_blank" style="color: var(--accent); text-decoration: none;">GitHub</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
