@@ -1,7 +1,5 @@
 <div align="center">
 
-![LiteClaw Logo](docs/liteclaw_logo.png)
-
 # LiteClaw
 
 一个让 AI 每一步操作都"留痕"的 Agent 框架
